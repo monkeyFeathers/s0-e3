@@ -3,7 +3,7 @@ module Snape
   class Bottle
     
     def initialize
-      @contents = ""
+      @contents = 
     end
     
     def drink
