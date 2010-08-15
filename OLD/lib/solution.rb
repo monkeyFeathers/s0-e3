@@ -1,3 +1,0 @@
-module SnapeChallenge
-  class 
-end
