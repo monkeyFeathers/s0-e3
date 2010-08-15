@@ -60,34 +60,7 @@ module Trap
       end
       
       pour_potions @bottles, @potions
-      
     end # initialize
-    
-    def twins
-      # check if second left and second from the right are the same
-      # if not, make them the same
-      if @bottles[1] != @bottles[5]
-        # g
-        bottles = @bottles[2..6]
-        potions = []
-        bottles.each do |bottle|
-          potions << bottle.contents.new
-        end
-        potions.each do |potion|
-          if potion.class == @bottles[1].contents
-            @bottles[5].contents = potion
-            potions.delete(potion)
-            break
-          end
-        end
-        # set bottles to be the remaining bottles
-        bottles = @bottles[2..4]
-        bottles << @bottles[6]
-        
-        # find homes for the rest
-        pour_potions bottles, potions
-      end
-    end
     
     def pour_potions(bottles,potions)
       bottles.each do |bottle|
