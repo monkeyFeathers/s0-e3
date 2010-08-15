@@ -4,9 +4,6 @@ module Trap
   
   class Bottle
     attr_writer :contents
-    def self.inherited(subclass)
-    
-    end
     
     def initialize
     end
@@ -19,8 +16,21 @@ module Trap
       @contents == nil
     end
     
+    def empty
+      @contents = nil
+    end
+    
     def potion_error(contents)
       raise Trap::PotionError, "#{self.class} cannot contain #{contents.class}"
+    end
+    
+    def what_cannot_be(contents, *forbidden_potions)
+      forbidden_potions.each do |potion|
+        if contents.class == potion
+          potion_error contents
+        end
+      end
+      @contents = contents
     end
     
   end
@@ -30,31 +40,19 @@ module Trap
 
   class SmallBottle < Bottle
     def contents=(contents)
-      if contents.class == Potion::MoveForward or contents.class == Potion::NettleWine
-        potion_error contents
-      else
-        @contents = contents
-      end
+      what_cannot_be contents, Potion::MoveForward, Potion::NettleWine
     end
   end
   
   class LargeBottle < Bottle
     def contents=(contents)
-      if contents.class == Potion::Poison or contents.class == Potion::MoveForward or contents.class == Potion::MoveBackward
-        potion_error contents
-      else
-        @contents = contents
-      end
+      what_cannot_be contents, Potion::MoveForward, Potion::MoveBackward
     end
   end
   
   class SmallestBottle < Bottle
     def contents=(contents)
-      if contents.class == Potion::Poison
-        potion_error contents
-      else
-        @contents = contents
-      end
+      what_cannot_be contents, Potion::Poison
     end
   end
   
@@ -66,21 +64,13 @@ module Trap
   
   class LargestBottle < Bottle
     def contents=(contents)
-      if contents.class == Potion::Poison or contents.class == Potion::MoveForward or contents.class == Potion::MoveBackward
-        potion_error contents
-      else
-        @contents = contents
-      end
+      what_cannot_be contents, Potion::Poison, Potion::MoveForward, Potion::MoveBackward
     end
   end
   
   class MediumBottle < Bottle
     def contents=(contents)
-      if contents.class == Potion::MoveForward
-        potion_error contents
-      else
-        @contents = contents
-      end
+      what_cannot_be contents, Potion::MoveForward
     end
   end
 

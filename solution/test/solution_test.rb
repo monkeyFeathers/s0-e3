@@ -15,7 +15,7 @@ module Trap
       setup do
         @trap = Table.new
       end
-
+      
       describe "first" do
         test "nettle wine's left side" do
           @trap.bottles.each do |bottle|

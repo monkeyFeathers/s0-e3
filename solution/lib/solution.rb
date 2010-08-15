@@ -27,6 +27,10 @@ class TrapArrangement < Array
     left = self.index(bottle) -1
     self[left]
   end
+  def right_side_of(bottle)
+    right = self.index(bottle) + 1
+    self[right]
+  end
 end
 
 module Trap
@@ -59,21 +63,74 @@ module Trap
         @bottles << bottle
       end
       
-      pour_potions @bottles, @potions
+      pour_potions @bottles, @potions.dup
+      
+      until nettle_wines_left_side?
+        nettle_wine
+      end
+      
     end # initialize
     
-    def pour_potions(bottles,potions)
-      bottles.each do |bottle|
-        potions.each do |potion|
-          begin
-            bottle.contents = potion
-            potions.delete potion
-            break
-          rescue Trap::PotionError
+    def pour_potions(bottles, potions)
+      # while any_bottles_empty?
+        bottles.each do |bottle|
+          if bottle.empty?
+            potions.each do |potion|
+              begin
+                bottle.contents = potion
+                potions.delete potion
+                break
+              rescue Trap::PotionError
+                next
+              end # begin
+            end # each potion
+          else
             next
           end
+        end # each bottle
+      # end
+    end
+    
+    def any_bottles_empty?
+      empties = false
+      @bottles.each do |bottle|
+        unless bottle.contents
+          empties = true
         end
       end
+      empties
+    end
+    
+    def nettle_wines_left_side?
+      nettle_wines = []
+      @bottles.each do |bottle|
+        if bottle.contents == Potion::NettleWine
+          nettle_wines << bottle
+        end
+      end
+      @bottles.left_side_of(nettle_wines[0]).contents == Potion::Poison and @bottles.left_side_of(nettle_wines[1]).contents == Potion::Poison
+    end
+    
+    def nettle_wine
+      @potions << @potions.shift
+      potions = @potions.dup
+      @bottles.first.contents
+      bottles = @bottles[1..6]
+      
+      potions.each do |potion|
+        if potion.class == @bottles.first.contents
+          potions.delete potion
+          break
+        end
+      end
+      
+      bottles.each do |bottle|
+        bottle.empty
+      end
+      pour_potions bottles, potions
+    end
+    
+    def twins
     end
     
   end
